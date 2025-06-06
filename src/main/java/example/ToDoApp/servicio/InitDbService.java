@@ -17,8 +17,9 @@ public class InitDbService {
     @Autowired
     private TareaRepository tareaRepository;
 
-    // Se ejecuta tras crear el contexto de la aplicación
-    // para inicializar la base de datos
+
+    /*
+    //Al ejecutar se crea este usuario por defecto
     @PostConstruct
     public void initDatabase() {
         Usuario usuario = new Usuario("user@ua");
@@ -31,5 +32,5 @@ public class InitDbService {
 
         Tarea tarea2 = new Tarea(usuario, "Renovar DNI");
         tareaRepository.save(tarea2);
-    }
+    }*/
 }

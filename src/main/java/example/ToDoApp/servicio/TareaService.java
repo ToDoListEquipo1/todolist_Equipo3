@@ -26,7 +26,7 @@ public class TareaService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private TareaRepository tareaRepository;
-
+    @Autowired
     private ModelMapper modelMapper;
 
     @Transactional
@@ -96,4 +96,5 @@ public class TareaService {
         }
         return usuario.getTareas().contains(tarea);
     }
+
 }
