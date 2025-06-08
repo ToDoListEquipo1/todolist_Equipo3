@@ -31,7 +31,7 @@ public class Usuario {
     @Column(name = "fecha_nacimiento")
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
-
+    private Boolean bloqueado = false;
     //Usuario admin
     @Column(name = "es_admin", nullable = false)
     private Boolean esAdministrador;

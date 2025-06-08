@@ -20,7 +20,7 @@ public class UsuarioService {
 
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
+    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, USER_BLOCKED, ERROR_PASSWORD}
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -33,7 +33,9 @@ public class UsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(eMail);
         if (!usuario.isPresent()) {
             return LoginStatus.USER_NOT_FOUND;
-        } else if (!usuario.get().getPassword().equals(password)) {
+        }else if (Boolean.TRUE.equals(usuario.get().getBloqueado())) {
+            return LoginStatus.USER_BLOCKED;
+        }else if (!usuario.get().getPassword().equals(password)) {
             return LoginStatus.ERROR_PASSWORD;
         } else {
             return LoginStatus.LOGIN_OK;
@@ -50,6 +52,8 @@ public class UsuarioService {
             throw new UsuarioServiceException("El usuario " + usuario.getEmail() + " ya está registrado");
         else if (usuario.getEmail() == null)
             throw new UsuarioServiceException("El usuario no tiene email");
+        else if (usuarioRepository.existsByEmail(usuario.getEmail()))
+            throw new UsuarioServiceException("El usuario registrado con ese correo ya existe");
         else if (usuario.getPassword() == null)
             throw new UsuarioServiceException("El usuario no tiene password");
         else if (usuario.getEsAdministrador() && usuarioRepository.existsByEsAdministradorTrue()) {
@@ -88,4 +92,12 @@ public class UsuarioService {
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
     }
+    @Transactional
+    public void Bloqueo(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new UsuarioServiceException("Usuario no encontrado"));
+        usuario.setBloqueado(!Boolean.TRUE.equals(usuario.getBloqueado()));
+        usuarioRepository.save(usuario);
+    }
+
 }

@@ -6,22 +6,30 @@
 <body>
 <h1>Usuarios Registrados</h1>
 
-<div th:each="usuario : ${usuarios}" style= "margin-bottom: 30px;">
-    <h3 th:text="'Usuario ID: ' + ${usuario.id}">Usuario ID </h3>
     <table border="1" cellpadding="5", cellspacing="0">
-        <tr>
-            <th>Campo</th>
-            <th>Valor</th>
-        </tr>
-        <tr>
-            <td>Nombre</td>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="usuario : ${usuarios}">
+            <td th:text="${usuario.id}">ID</td>
             <td th:text="${usuario.nombre}">Nombre</td>
-        </tr>
-        <tr>
-            <td>Email</td>
             <td th:text="${usuario.email}">Email</td>
+            <td th:text="${usuario.bloqueado} ? 'Bloqueado' : 'Activo'">Estado</td>
+            <td>
+                <form th:action="@{'/usuarios/' + ${usuario.id} + '/bloqueo'}" method="post">
+                    <button type="submit"
+                            th:text="${usuario.bloqueado} ? 'Habilitar' : 'Bloquear'">Toggle</button>
+                </form>
+            </td>
         </tr>
-    </table>
-</div>
+        </tbody>
+        </table>
 </body>
 </html>

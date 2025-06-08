@@ -14,6 +14,7 @@ public class UsuarioData {
     private Date fechaNacimiento;
 
     private Boolean esAdministrador;
+    private Boolean bloqueado;
 
     public boolean equals(Object o) {
         if (this == o) return true;
