@@ -115,12 +115,10 @@ public class LoginController {
     public String usuarioList(Model model, HttpSession session) {
 
         UsuarioData usuario = (UsuarioData) session.getAttribute("usuario");
-        System.out.println("usuario " + usuario.getEmail() + usuario.getEsAdministrador());
-
         if (usuario == null) {
-            model.addAttribute("error", "Debes iniciar sesión.");
             return "redirect:/login";
         }
+        System.out.println("usuario " + usuario.getEmail() + " esAdmin: " + usuario.getEsAdministrador());
 
         if (!Boolean.TRUE.equals(usuario.getEsAdministrador())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No tienes permisos suficientes.");
