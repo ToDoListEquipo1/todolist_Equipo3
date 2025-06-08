@@ -13,6 +13,8 @@ public class UsuarioData {
     private String password;
     private Date fechaNacimiento;
 
+    private Boolean esAdministrador;
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UsuarioData)) return false;

@@ -1,10 +1,12 @@
 package example.ToDoApp.dto;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+@Data
 public class RegistroData {
 
     @Email
@@ -13,36 +15,5 @@ public class RegistroData {
     private String nombre;
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date fechaNacimiento;
-
-    public String getEmail() {
-        return eMail;
-    }
-
-    public void setEmail(String eMail) {
-        this.eMail = eMail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Date getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
+    private boolean esAdministrador;
 }

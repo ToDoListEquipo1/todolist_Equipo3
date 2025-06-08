@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "usuarios")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+
 public class Usuario {
 
     @Id
@@ -32,10 +32,16 @@ public class Usuario {
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
 
+    //Usuario admin
+    @Column(name = "es_admin", nullable = false)
+    private Boolean esAdministrador;
+
     public Usuario(String email) {
         this.email = email;
     }
+
     @OneToMany(mappedBy = "usuario")
+
     Set<Tarea> tareas = new HashSet<>();
     public Set<Tarea> getTareas() {
         return tareas;

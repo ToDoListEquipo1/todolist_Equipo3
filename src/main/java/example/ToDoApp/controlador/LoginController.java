@@ -4,17 +4,19 @@ import example.ToDoApp.authentication.ManagerUserSession;
 import example.ToDoApp.dto.LoginData;
 import example.ToDoApp.dto.RegistroData;
 import example.ToDoApp.dto.UsuarioData;
-import example.ToDoApp.model.Usuario;
+import example.ToDoApp.repositorio.UsuarioRepository;
 import example.ToDoApp.servicio.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -26,6 +28,8 @@ public class LoginController {
 
     @Autowired
     ManagerUserSession managerUserSession;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -49,7 +53,13 @@ public class LoginController {
 
             managerUserSession.logearUsuario(usuario.getId());
             session.setAttribute("usuario", usuario);
-            return "redirect:/usuarios/" + usuario.getId() + "/tareas";
+
+            //Esta cosa si el atributo es un Boolean, es decir objeto Boolean a un boolean
+            if (Boolean.TRUE.equals(usuario.getEsAdministrador()))
+                return "redirect:/registrados";
+            else
+                return "redirect:/usuarios/" + usuario.getId() + "/tareas";
+
         } else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND) {
             model.addAttribute("error", "No existe usuario");
             return "formLogin";
@@ -62,6 +72,9 @@ public class LoginController {
 
     @GetMapping("/registro")
     public String registroForm(Model model) {
+
+        boolean existeAdmin = usuarioRepository.existsByEsAdministradorTrue();
+        model.addAttribute("existeAdmin", existeAdmin);
         model.addAttribute("registroData", new RegistroData());
         return "formRegistro";
     }
@@ -73,17 +86,19 @@ public class LoginController {
             return "formRegistro";
         }
 
-        if (usuarioService.findByEmail(registroData.getEmail()) != null) {
+        if (usuarioService.findByEmail(registroData.getEMail()) != null) {
             model.addAttribute("registroData", registroData);
-            model.addAttribute("error", "El usuario " + registroData.getEmail() + " ya existe");
+            model.addAttribute("error", "El usuario " + registroData.getEMail() + " ya existe");
             return "formRegistro";
         }
 
         UsuarioData usuario = new UsuarioData();
-        usuario.setEmail(registroData.getEmail());
+        usuario.setEmail(registroData.getEMail());
         usuario.setPassword(registroData.getPassword());
         usuario.setFechaNacimiento(registroData.getFechaNacimiento());
         usuario.setNombre(registroData.getNombre());
+
+        usuario.setEsAdministrador(registroData.isEsAdministrador());
 
         usuarioService.registrar(usuario);
         return "redirect:/login";
@@ -97,11 +112,25 @@ public class LoginController {
    }
 
     @GetMapping("/registrados")
-    public String usuarioList(Model model) {
+    public String usuarioList(Model model, HttpSession session) {
+
+        UsuarioData usuario = (UsuarioData) session.getAttribute("usuario");
+        System.out.println("usuario " + usuario.getEmail() + usuario.getEsAdministrador());
+
+        if (usuario == null) {
+            model.addAttribute("error", "Debes iniciar sesión.");
+            return "redirect:/login";
+        }
+
+        if (!Boolean.TRUE.equals(usuario.getEsAdministrador())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No tienes permisos suficientes.");
+        }
+
         List<UsuarioData> usuarios = usuarioService.findAll();
         model.addAttribute("usuarios", usuarios);
         return "listaUsuarios";
     }
+
     @GetMapping("/cuenta")
     public String cuentaForm(Model model, HttpSession session) {
         UsuarioData usuario = (UsuarioData) session.getAttribute("usuario");
@@ -113,5 +142,11 @@ public class LoginController {
         UsuarioData usuarioActualizado = usuarioService.findById(usuario.getId());
         model.addAttribute("usuario", usuarioActualizado);
         return "cuenta";
+    }
+
+    //Usuario Administrador
+    @GetMapping("/admin")
+    public boolean existeAdmin(){
+        return usuarioRepository.existsByEsAdministradorTrue();
     }
 }

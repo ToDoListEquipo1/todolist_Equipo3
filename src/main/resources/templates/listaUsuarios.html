@@ -5,12 +5,23 @@
 </head>
 <body>
 <h1>Usuarios Registrados</h1>
-<ul>
-    <li th:each="usuario : ${usuarios}">
-        <span th:text="${usuario.id}"> Id</span>
-        <span th:text="${usuario.nombre}">Nombre</span> -
-        <span th:text="${usuario.email}">Email</span>
-    </li>
-</ul>
+
+<div th:each="usuario : ${usuarios}" style= "margin-bottom: 30px;">
+    <h3 th:text="'Usuario ID: ' + ${usuario.id}">Usuario ID </h3>
+    <table border="1" cellpadding="5", cellspacing="0">
+        <tr>
+            <th>Campo</th>
+            <th>Valor</th>
+        </tr>
+        <tr>
+            <td>Nombre</td>
+            <td th:text="${usuario.nombre}">Nombre</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td th:text="${usuario.email}">Email</td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>

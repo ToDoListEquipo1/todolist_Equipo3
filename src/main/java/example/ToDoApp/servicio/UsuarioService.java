@@ -52,20 +52,24 @@ public class UsuarioService {
             throw new UsuarioServiceException("El usuario no tiene email");
         else if (usuario.getPassword() == null)
             throw new UsuarioServiceException("El usuario no tiene password");
-        else {
+        else if (usuario.getEsAdministrador() && usuarioRepository.existsByEsAdministradorTrue()) {
+            throw new UsuarioServiceException("Ya existe un usuario con es administrador");
+        } else {
             Usuario usuarioNuevo = modelMapper.map(usuario, Usuario.class);
             usuarioNuevo = usuarioRepository.save(usuarioNuevo);
             return modelMapper.map(usuarioNuevo, UsuarioData.class);
         }
     }
 
+
     @Transactional(readOnly = true)
     public UsuarioData findByEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
         if (usuario == null) return null;
-        else {
-            return modelMapper.map(usuario, UsuarioData.class);
-        }
+        UsuarioData dto = modelMapper.map(usuario, UsuarioData.class);
+        logger.info("findByEmail: usuario {} esAdministrador: {}", email, dto.getEsAdministrador());
+        System.out.println("usuario " + usuario.getEmail() + " esAdministrador: " + dto.getEsAdministrador());
+        return dto;
     }
 
     @Transactional(readOnly = true)
