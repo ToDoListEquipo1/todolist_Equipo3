@@ -68,7 +68,7 @@ public class LoginController {
             return "formLogin";
         }if (loginStatus == UsuarioService.LoginStatus.USER_BLOCKED) {
             model.addAttribute("error", "Tu cuenta está bloqueada. Contacta al administrador.");
-            return "login";
+            return "formError";
         }
         return "formLogin";
     }
