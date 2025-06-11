@@ -79,6 +79,7 @@ Para proteger rutas y vistas se implementaron reglas como:
 ## Interfaz de Usuario
 
 El frontend de la aplicación fue construido con **Bootstrap**, ofreciendo una experiencia de usuario limpia y responsiva. Se emplearon formularios y botones estilizados para mejorar la usabilidad, y se incluyeron alertas claras en caso de errores o restricciones.
-
+## Enlace trello
+[Enlace externo a trello](https://trello.com/invite/b/683c4289952b062577c95cbd/ATTI0e94bae214f5177354a6dd4c7a21d15dDB880E49/my-trello-board)
 
 
