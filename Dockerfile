@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Copiar el JAR generado al contenedor
-COPY target/ToDoApp-0.0.1-SNAPSHOT.jar app.jar
+COPY target/ToDoApp-2.0.1-SNAPSHOT.jar app.jar
 
 # Exponer el puerto de Spring Boot
 EXPOSE 8080
