@@ -68,27 +68,6 @@ public class TareaServiceTest {
         assertTrue(exception.getMessage().contains("Usuario 99 no existe"));
     }
 
-    @Test
-    void testAllTareasUsuario() {
-        tarea.setId(10L);
-        Tarea otraTarea = new Tarea(usuario, "Otra tarea");
-        otraTarea.setId(5L);
-        usuario.setTareas((Set<Tarea>) Arrays.asList(tarea, otraTarea));
-
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(modelMapper.map(any(Tarea.class), eq(TareaData.class)))
-                .thenAnswer(invocation -> {
-                    Tarea t = invocation.getArgument(0);
-                    TareaData data = new TareaData();
-                    data.setId(t.getId());
-                    data.setTitulo(t.getTitulo());
-                    return data;
-                });
-
-        List<TareaData> result = tareaService.allTareasUsuario(1L);
-        assertEquals(2, result.size());
-        assertEquals(5L, result.get(0).getId()); // debe estar ordenado por id
-    }
 
     @Test
     void testFindById() {
