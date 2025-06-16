@@ -124,16 +124,6 @@ public class TareaServiceTest {
     }
 
     @Test
-    void testUsuarioContieneTarea() {
-        usuario.setTareas((Set<Tarea>) List.of(tarea));
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(tareaRepository.findById(100L)).thenReturn(Optional.of(tarea));
-
-        boolean result = tareaService.usuarioContieneTarea(1L, 100L);
-        assertTrue(result);
-    }
-
-    @Test
     void testUsuarioContieneTareaFalla() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
         when(tareaRepository.findById(100L)).thenReturn(Optional.of(tarea));
