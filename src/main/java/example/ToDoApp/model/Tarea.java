@@ -18,43 +18,55 @@ public class Tarea implements Serializable {
     private Long id;
     @NotNull
     private String titulo;
+    private String descripcion;
     @NotNull
     @ManyToOne
 
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    public Tarea() {}
+    public Tarea() {
+    }
 
-    public Tarea(Usuario usuario, String titulo) {
+    public Tarea(Usuario usuario, String titulo, String descripcion) {
         this.titulo = titulo;
-        setUsuario(usuario); // Esto añadirá la tarea a la lista de tareas del usuario
+        this.descripcion = descripcion;
+        setUsuario(usuario);
     }
 
     public void setUsuario(Usuario usuario) {
         // Comprueba si el usuario ya está establecido
-        if(this.usuario != usuario) {
+        if (this.usuario != usuario) {
             this.usuario = usuario;
             // Añade la tarea a la lista de tareas del usuario
             usuario.addTarea(this);
         }
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Tarea))
+            return false;
         Tarea tarea = (Tarea) o;
         if (id != null && tarea.id != null)
-            // Si tenemos los ID, comparamos por ID
             return Objects.equals(id, tarea.id);
-        // si no comparamos por campos obligatorios
-        return titulo.equals(tarea.titulo) &&
-                usuario.equals(tarea.usuario);
+        return titulo.equals(tarea.titulo)
+                && usuario.equals(tarea.usuario)
+                && Objects.equals(descripcion, tarea.descripcion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(titulo, usuario);
+        return Objects.hash(titulo, usuario, descripcion);
     }
 }
