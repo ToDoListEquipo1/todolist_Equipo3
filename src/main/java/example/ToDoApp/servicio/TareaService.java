@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 
-
 @Service
 public class TareaService {
 
@@ -30,13 +29,10 @@ public class TareaService {
     private ModelMapper modelMapper;
 
     @Transactional
-    public TareaData nuevaTareaUsuario(Long idUsuario, String tituloTarea) {
-        logger.debug("Añadiendo tarea " + tituloTarea + " al usuario " + idUsuario);
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
-        if (usuario == null) {
-            throw new TareaServiceException("Usuario " + idUsuario + " no existe al crear tarea " + tituloTarea);
-        }
-        Tarea tarea = new Tarea(usuario, tituloTarea);
+    public TareaData nuevaTareaUsuario(Long idUsuario, String tituloTarea, String descripcion) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new TareaServiceException("Usuario no existe"));
+        Tarea tarea = new Tarea(usuario, tituloTarea, descripcion);
         tareaRepository.save(tarea);
         return modelMapper.map(tarea, TareaData.class);
     }
@@ -61,18 +57,18 @@ public class TareaService {
     public TareaData findById(Long tareaId) {
         logger.debug("Buscando tarea " + tareaId);
         Tarea tarea = tareaRepository.findById(tareaId).orElse(null);
-        if (tarea == null) return null;
-        else return modelMapper.map(tarea, TareaData.class);
+        if (tarea == null)
+            return null;
+        else
+            return modelMapper.map(tarea, TareaData.class);
     }
 
     @Transactional
-    public TareaData modificaTarea(Long idTarea, String nuevoTitulo) {
-        logger.debug("Modificando tarea " + idTarea + " - " + nuevoTitulo);
-        Tarea tarea = tareaRepository.findById(idTarea).orElse(null);
-        if (tarea == null) {
-            throw new TareaServiceException("No existe tarea con id " + idTarea);
-        }
+    public TareaData modificaTarea(Long idTarea, String nuevoTitulo, String nuevaDescripcion) {
+        Tarea tarea = tareaRepository.findById(idTarea)
+                .orElseThrow(() -> new TareaServiceException("No existe tarea"));
         tarea.setTitulo(nuevoTitulo);
+        tarea.setDescripcion(nuevaDescripcion); // ← asignamos descripción
         tarea = tareaRepository.save(tarea);
         return modelMapper.map(tarea, TareaData.class);
     }

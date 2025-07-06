@@ -40,10 +40,10 @@ public class InitDbServiceTest {
         // Lógica idéntica a la del método original
         usuarioRepository.save(usuario);
 
-        Tarea tarea1 = new Tarea(usuario, "Lavar coche");
+        Tarea tarea1 = new Tarea(usuario, "Lavar coche", "Lavar el coche en el garaje");
         tareaRepository.save(tarea1);
 
-        Tarea tarea2 = new Tarea(usuario, "Renovar DNI");
+        Tarea tarea2 = new Tarea(usuario, "Renovar DNI", "Renovar el DNI en la comisaría");
         tareaRepository.save(tarea2);
 
         // Verificaciones

@@ -35,9 +35,9 @@ public class TareaController {
     }
 
     @GetMapping("/usuarios/{id}/tareas/nueva")
-    public String formNuevaTarea(@PathVariable(value="id") Long idUsuario,
-                                 @ModelAttribute TareaData tareaData, Model model,
-                                 HttpSession session) {
+    public String formNuevaTarea(@PathVariable(value = "id") Long idUsuario,
+            @ModelAttribute TareaData tareaData, Model model,
+            HttpSession session) {
 
         comprobarUsuarioLogeado(idUsuario);
 
@@ -47,19 +47,23 @@ public class TareaController {
     }
 
     @PostMapping("/usuarios/{id}/tareas/nueva")
-    public String nuevaTarea(@PathVariable(value="id") Long idUsuario, @ModelAttribute TareaData tareaData,
-                             Model model, RedirectAttributes flash,
-                             HttpSession session) {
+    public String nuevaTarea(
+            @PathVariable("id") Long idUsuario,
+            @ModelAttribute TareaData tareaData,
+            RedirectAttributes flash) {
 
         comprobarUsuarioLogeado(idUsuario);
-
-        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo());
+        // ① llama al servicio pasando descripción
+        tareaService.nuevaTareaUsuario(
+                idUsuario,
+                tareaData.getTitulo(),
+                tareaData.getDescripcion());
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/usuarios/" + idUsuario + "/tareas";
-     }
+    }
 
     @GetMapping("/usuarios/{id}/tareas")
-    public String listadoTareas(@PathVariable(value="id") Long idUsuario, Model model, HttpSession session) {
+    public String listadoTareas(@PathVariable(value = "id") Long idUsuario, Model model, HttpSession session) {
 
         comprobarUsuarioLogeado(idUsuario);
         UsuarioData usuario = usuarioService.findById(idUsuario);
@@ -73,43 +77,44 @@ public class TareaController {
     }
 
     @GetMapping("/tareas/{id}/editar")
-    public String formEditaTarea(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
-                                 Model model, HttpSession session) {
-
+    public String formEditaTarea(@PathVariable("id") Long idTarea,
+            @ModelAttribute TareaData tareaData,
+            Model model,
+            HttpSession session) {
         TareaData tarea = tareaService.findById(idTarea);
         if (tarea == null) {
             throw new TareaNotFoundException();
         }
-
         comprobarUsuarioLogeado(tarea.getUsuarioId());
-
         model.addAttribute("tarea", tarea);
         tareaData.setTitulo(tarea.getTitulo());
+        tareaData.setDescripcion(tarea.getDescripcion());
         return "formEditarTarea";
     }
 
     @PostMapping("/tareas/{id}/editar")
-    public String grabaTareaModificada(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
-                                       Model model, RedirectAttributes flash, HttpSession session) {
+    public String grabaTareaModificada(
+            @PathVariable("id") Long idTarea,
+            @ModelAttribute TareaData tareaData,
+            RedirectAttributes flash) {
+
         TareaData tarea = tareaService.findById(idTarea);
-        if (tarea == null) {
-            throw new TareaNotFoundException();
-        }
-
-        Long idUsuario = tarea.getUsuarioId();
-
-        comprobarUsuarioLogeado(idUsuario);
-
-        tareaService.modificaTarea(idTarea, tareaData.getTitulo());
+        comprobarUsuarioLogeado(tarea.getUsuarioId());
+        // ② pasa también descripción a la modificación
+        tareaService.modificaTarea(
+                idTarea,
+                tareaData.getTitulo(),
+                tareaData.getDescripcion());
         flash.addFlashAttribute("mensaje", "Tarea modificada correctamente");
         return "redirect:/usuarios/" + tarea.getUsuarioId() + "/tareas";
     }
 
     @DeleteMapping("/tareas/{id}")
     @ResponseBody
-    // La anotación @ResponseBody sirve para que la cadena devuelta sea la resupuesta
+    // La anotación @ResponseBody sirve para que la cadena devuelta sea la
+    // resupuesta
     // de la petición HTTP, en lugar de una plantilla thymeleaf
-    public String borrarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session) {
+    public String borrarTarea(@PathVariable(value = "id") Long idTarea, RedirectAttributes flash, HttpSession session) {
         TareaData tarea = tareaService.findById(idTarea);
         if (tarea == null) {
             throw new TareaNotFoundException();
@@ -121,4 +126,3 @@ public class TareaController {
         return "";
     }
 }
-
