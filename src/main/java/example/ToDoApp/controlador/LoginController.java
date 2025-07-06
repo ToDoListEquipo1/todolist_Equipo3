@@ -54,7 +54,7 @@ public class LoginController {
             managerUserSession.logearUsuario(usuario.getId());
             session.setAttribute("usuario", usuario);
 
-            //Esta cosa si el atributo es un Boolean, es decir objeto Boolean a un boolean
+            // Esta cosa si el atributo es un Boolean, es decir objeto Boolean a un boolean
             if (Boolean.TRUE.equals(usuario.getEsAdministrador()))
                 return "redirect:/registrados";
             else
@@ -66,7 +66,8 @@ public class LoginController {
         } else if (loginStatus == UsuarioService.LoginStatus.ERROR_PASSWORD) {
             model.addAttribute("error", "Contraseña incorrecta");
             return "formLogin";
-        }if (loginStatus == UsuarioService.LoginStatus.USER_BLOCKED) {
+        }
+        if (loginStatus == UsuarioService.LoginStatus.USER_BLOCKED) {
             model.addAttribute("error", "Tu cuenta está bloqueada. Contacta al administrador.");
             return "formError";
         }
@@ -82,8 +83,8 @@ public class LoginController {
         return "formRegistro";
     }
 
-   @PostMapping("/registro")
-   public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
+    @PostMapping("/registro")
+    public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
             return "formRegistro";
@@ -100,19 +101,19 @@ public class LoginController {
         usuario.setPassword(registroData.getPassword());
         usuario.setFechaNacimiento(registroData.getFechaNacimiento());
         usuario.setNombre(registroData.getNombre());
-
+        usuario.setApellido(registroData.getApellido());
         usuario.setEsAdministrador(registroData.isEsAdministrador());
 
         usuarioService.registrar(usuario);
         return "redirect:/login";
-   }
+    }
 
-   @GetMapping("/logout")
-   public String logout(HttpSession session) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
         managerUserSession.logout();
-       session.invalidate();
+        session.invalidate();
         return "redirect:/login";
-   }
+    }
 
     @GetMapping("/registrados")
     public String usuarioList(Model model, HttpSession session) {
@@ -145,9 +146,9 @@ public class LoginController {
         return "cuenta";
     }
 
-    //Usuario Administrador
+    // Usuario Administrador
     @GetMapping("/admin")
-    public boolean existeAdmin(){
+    public boolean existeAdmin() {
         return usuarioRepository.existsByEsAdministradorTrue();
     }
 }

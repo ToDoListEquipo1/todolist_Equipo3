@@ -10,15 +10,17 @@ public class UsuarioData {
     private Long id;
     private String email;
     private String nombre;
+    private String apellido;
     private String password;
     private Date fechaNacimiento;
-
     private Boolean esAdministrador;
     private Boolean bloqueado;
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UsuarioData)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof UsuarioData))
+            return false;
         UsuarioData that = (UsuarioData) o;
         return Objects.equals(getId(), that.getId());
     }
