@@ -1,14 +1,6 @@
-# Imagen base de Java
+# Imagen base de Java 21
 FROM eclipse-temurin:21-jdk
-
-# Directorio de trabajo dentro del contenedor
-WORKDIR /app
-
-# Copiar el JAR generado al contenedor
-COPY target/ToDoApp-2.0.1-SNAPSHOT.jar app.jar
-
-# Exponer el puerto de Spring Boot
+COPY target/*.jar app.jar
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Usamos el ENTRYPOINT que deja pasar flags al JAR
+ENTRYPOINT ["sh","-c","java -Djava.security.egd=file:/dev/urandom -jar /app.jar ${0} ${@}"]
