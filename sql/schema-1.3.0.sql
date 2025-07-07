@@ -26,7 +26,8 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.equipos (
     id bigint NOT NULL,
-    nombre character varying(255)
+    nombre character varying(255),
+    descripcion character varying(255)
 );
 
 
