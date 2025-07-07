@@ -1,6 +1,5 @@
 package example.ToDoApp.servicio;
 
-
 import example.ToDoApp.dto.UsuarioData;
 import example.ToDoApp.model.Usuario;
 import example.ToDoApp.repositorio.UsuarioRepository;
@@ -20,7 +19,9 @@ public class UsuarioService {
 
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, USER_BLOCKED, ERROR_PASSWORD}
+    public enum LoginStatus {
+        LOGIN_OK, USER_NOT_FOUND, USER_BLOCKED, ERROR_PASSWORD
+    }
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -33,9 +34,9 @@ public class UsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(eMail);
         if (!usuario.isPresent()) {
             return LoginStatus.USER_NOT_FOUND;
-        }else if (Boolean.TRUE.equals(usuario.get().getBloqueado())) {
+        } else if (Boolean.TRUE.equals(usuario.get().getBloqueado())) {
             return LoginStatus.USER_BLOCKED;
-        }else if (!usuario.get().getPassword().equals(password)) {
+        } else if (!usuario.get().getPassword().equals(password)) {
             return LoginStatus.ERROR_PASSWORD;
         } else {
             return LoginStatus.LOGIN_OK;
@@ -60,16 +61,17 @@ public class UsuarioService {
             throw new UsuarioServiceException("Ya existe un usuario con es administrador");
         } else {
             Usuario usuarioNuevo = modelMapper.map(usuario, Usuario.class);
+            usuarioNuevo.setApellido(usuario.getApellido());
             usuarioNuevo = usuarioRepository.save(usuarioNuevo);
             return modelMapper.map(usuarioNuevo, UsuarioData.class);
         }
     }
 
-
     @Transactional(readOnly = true)
     public UsuarioData findByEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
-        if (usuario == null) return null;
+        if (usuario == null)
+            return null;
         UsuarioData dto = modelMapper.map(usuario, UsuarioData.class);
         logger.info("findByEmail: usuario {} esAdministrador: {}", email, dto.getEsAdministrador());
         System.out.println("usuario " + usuario.getEmail() + " esAdministrador: " + dto.getEsAdministrador());
@@ -79,7 +81,8 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioData findById(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
-        if (usuario == null) return null;
+        if (usuario == null)
+            return null;
         else {
             return modelMapper.map(usuario, UsuarioData.class);
         }
@@ -92,6 +95,7 @@ public class UsuarioService {
                 .map(usuario -> modelMapper.map(usuario, UsuarioData.class))
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public void Bloqueo(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)

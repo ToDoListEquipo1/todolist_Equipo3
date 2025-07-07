@@ -21,7 +21,9 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <span th:text="${session.usuario.nombre}">Usuario</span>
+                         <span th:text="${session.usuario.nombre} + ' ' + ${session.usuario.apellido}">
+                            Usuario
+                        </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
                         <li><a class="dropdown-item" href="/cuenta">Cuenta</a></li>
