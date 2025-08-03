@@ -33,5 +33,5 @@ jobs:
       - name: Build, Lint, Test (mvn verify)
         run: mvn clean verify
 
-      - name: SonarCloud Scan
-        run: mvn sonar:sonar -Dsonar.projectKey=todolistequipo3 -Dsonar.organization=ToDoListEquipo3 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.branch.name=${{ github.ref_name }}
+      - name: SpotBugs Check
+        run: mvn spotbugs:check
